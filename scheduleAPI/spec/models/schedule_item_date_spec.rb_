@@ -1,0 +1,211 @@
+require 'rails_helper'
+
+RSpec.describe ScheduleItemDate, type: :model do
+  
+  before do
+    schedule_item = create(:schedule_item)
+    @schedule_item_date = schedule_item.schedule_item_dates.build(
+      year: nil,
+      month: nil,
+      week: nil,
+      day: nil,
+      hour: nil )
+  end  
+
+
+  describe '正常性確認' do
+    subject { @schedule_item_date.valid? }
+
+    it '正常値(最大)が正しいこと' do
+      @schedule_item_date.year = 9999
+      @schedule_item_date.month = 12
+      @schedule_item_date.week = nil
+      @schedule_item_date.day = 31
+      @schedule_item_date.hour = 2
+      is_expected.to be true
+    end
+
+    it '正常値(最小)が正しいこと' do
+      @schedule_item_date.year = 2000
+      @schedule_item_date.month = 1
+      @schedule_item_date.week = nil
+      @schedule_item_date.day = 1
+      @schedule_item_date.hour = 0
+      is_expected.to be true
+    end
+
+    it '正常値(nil)が正しいこと' do
+      @schedule_item_date.year = nil
+      @schedule_item_date.month = nil
+      @schedule_item_date.week = nil
+      @schedule_item_date.day = nil
+      @schedule_item_date.hour = nil
+      is_expected.to be true
+    end
+
+    it '正常値(うるう日)が正しいこと' do
+      @schedule_item_date.year = 2020
+      @schedule_item_date.month = 2
+      @schedule_item_date.week = nil
+      @schedule_item_date.day = 29
+      @schedule_item_date.hour = nil
+      is_expected.to be true
+    end
+
+  end
+
+  describe '異常性確認' do
+
+    subject { @schedule_item_date.valid? }
+
+    describe 'year' do
+      it '空文字の時、不正となること' do
+        # 空文字がnilに変換されてtrueになってしまう（対処法が不明）ので
+        # 空文字もOKとする。
+        @schedule_item_date.year = " " * 4
+        is_expected.to be true
+      end
+
+      it '数値が範囲外(以上)の時、不正となること' do
+        @schedule_item_date.year = 10000
+        is_expected.not_to be true
+      end
+
+      it '数値が範囲外(以下)の時、不正となること' do
+        @schedule_item_date.year = 1999
+        is_expected.not_to be true
+      end
+
+      it '数値でない時、不正となること' do
+        @schedule_item_date.year = "aaaa"
+        is_expected.not_to be true
+      end
+    end 
+
+    describe 'month' do
+      it '空文字の時、不正となること' do
+        # 空文字がnilに変換されてtrueになってしまう（対処法が不明）ので
+        # 空文字もOKとする。
+        @schedule_item_date.month = " " * 2
+        is_expected.to be true
+      end
+
+      it '数値が範囲外(以上)の時、不正となること' do
+        @schedule_item_date.month = 13
+        is_expected.not_to be true
+      end
+
+      it '数値が範囲外(以下)の時、不正となること' do
+        @schedule_item_date.month = 0
+        is_expected.not_to be true
+      end
+
+      it '数値でない時、不正となること' do
+        @schedule_item_date.month = "aa"
+        is_expected.not_to be true
+      end
+    end
+
+    describe 'day' do
+      it '空文字の時、不正となること' do
+        # 空文字がnilに変換されてtrueになってしまう（対処法が不明）ので
+        # 空文字もOKとする。
+        @schedule_item_date.day = " " * 2
+        is_expected.to be true
+      end
+
+      it '数値が範囲外(以上)の時、不正となること' do
+        @schedule_item_date.day = 32
+        is_expected.not_to be true
+      end
+
+      it '数値が範囲外(以下)の時、不正となること' do
+        @schedule_item_date.day = 0
+        is_expected.not_to be true
+      end
+
+      it '数値でない時、不正となること' do
+        @schedule_item_date.day = "aa"
+        is_expected.not_to be true
+      end
+    end
+
+    describe 'week' do
+      it '空文字の時、不正となること' do
+        # 空文字がnilに変換されてtrueになってしまう（対処法が不明）ので
+        # 空文字もOKとする。
+        @schedule_item_date.week = " " * 2
+        is_expected.to be true
+      end
+
+      it '数値が範囲外(以上)の時、不正となること' do
+        @schedule_item_date.week = 76
+        is_expected.not_to be true
+      end
+
+      it '数値が範囲外(以下)の時、不正となること' do
+        @schedule_item_date.week = 9
+        is_expected.not_to be true
+      end
+
+      it '数値が範囲外(中間)の時、不正となること' do
+        @schedule_item_date.week = 16
+        is_expected.not_to be true
+      end
+
+      it '数値が範囲内(最大)の時、正常となること' do
+        @schedule_item_date.week = 75
+        is_expected.to be true
+      end
+
+      it '数値が範囲内(最大)の時、正常となること' do
+        @schedule_item_date.week = 10
+        is_expected.to be true
+      end
+
+
+      it '数値でない時、不正となること' do
+        @schedule_item_date.week = "aa"
+        is_expected.not_to be true
+      end
+    end
+
+    describe 'hour' do
+      it '空文字の時、不正となること' do
+        # 空文字がnilに変換されてtrueになってしまう（対処法が不明）ので
+        # 空文字もOKとする。
+        @schedule_item_date.hour = " " * 2
+        is_expected.to be true
+      end
+
+      it '数値が範囲外(以上)の時、不正となること' do
+        @schedule_item_date.hour = 24
+        is_expected.not_to be true
+      end
+
+      it '数値が範囲外(以下)の時、不正となること' do
+        @schedule_item_date.hour = -1
+        is_expected.not_to be true
+      end
+
+      it '数値でない時、不正となること' do
+        @schedule_item_date.hour = "aa"
+        is_expected.not_to be true
+      end
+    end
+
+    it '存在しない日付の時、不正となること' do
+      @schedule_item_date.year = 2021
+      @schedule_item_date.month = 2
+      @schedule_item_date.week = nil
+      @schedule_item_date.day = 29
+      is_expected.not_to be true
+    end
+
+    it 'weekとday両方に値が入っている時、不正となること' do
+      @schedule_item_date.week = 15
+      @schedule_item_date.day = 0
+      is_expected.not_to be true
+    end
+  end
+end

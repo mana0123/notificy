@@ -1,0 +1,41 @@
+version: '3'
+services:
+        db:
+                image: postgres:9.5.10
+                volumes:
+                        - ./scheduleAPI/tmp/db:/var/lib/postgresql/data
+        api:
+                build:
+                  context: ./scheduleAPI
+                  dockerfile: Dockerfile
+                command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
+                volumes:
+                        - ./scheduleAPI:/myapp
+                ports:
+                        - "3000:3000"
+                depends_on:
+                        - db
+
+        web:
+                build:
+                  context: ./scheduleWEB
+                  dockerfile: Dockerfile
+                command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3030 -b '0.0.0.0'"
+                volumes:
+                        - ./scheduleWEB:/myapp
+                ports:
+                        - "3030:3030"
+                depends_on:
+                        - api
+
+        line_api:
+                build:
+                  context: ./lineAPI
+                  dockerfile: Dockerfile
+                command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3040 -b '0.0.0.0'"
+                volumes:
+                        - ./lineAPI:/myapp
+                ports:
+                        - "3040:3040"
+                depends_on:
+                        - api

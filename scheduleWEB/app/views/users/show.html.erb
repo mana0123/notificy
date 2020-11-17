@@ -1,0 +1,6 @@
+<h1>Userinform</h1>
+  <h2>詳細</h2>
+    <%= render  'users_show', users:  [@user] %>
+  <h2>登録スケジュール</h2>
+    <%= button_to "追加", schedule_items_new_user_path(id: @user['line_id']), {method: :get, class: "btn btn-primary"} %>
+    <%= render  'schedule_items/schedule_items_show', { schedule_items: @schedule_items, user: @user } %>

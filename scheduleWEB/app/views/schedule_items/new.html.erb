@@ -1,0 +1,26 @@
+<h1>スケジュール追加</h1>
+   <%= form_with(scope: :post, url: "/users/#{@user_id}/schedule_items") do |form| %>
+
+      <%= form.label :content  %><br>
+      <%= form.text_field :content %><br>
+
+      <%= form.label :date %><br>
+        
+      <%= form.fields_for :dates do |date| %>
+        <%= date.label :year %><br>
+        <%= date.text_field :year %><br>
+
+        <%= date.label :month %><br>
+        <%= date.text_field :month %><br>
+
+        <%= date.label :week %><br>
+        <%= date.text_field :week %><br>
+
+        <%= date.label :day %><br>
+        <%= date.text_field :day %><br>
+
+        <%= date.label :hour %><br>
+        <%= date.text_field :hour %><br>
+      <% end %>
+      <%= form.submit "作成" %>
+    <% end %>

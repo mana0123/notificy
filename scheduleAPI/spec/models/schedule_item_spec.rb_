@@ -1,0 +1,77 @@
+require 'rails_helper'
+
+RSpec.describe ScheduleItem, type: :model do
+  before do
+    user = create(:active_user)
+    @schedule_item = user.schedule_items.build(
+      content: "ごみの日",
+      status: 1
+    )
+  end
+
+  describe '正常性確認' do
+    subject { @schedule_item.valid? }
+
+    it '正常値(最大)が正しいこと' do
+      @schedule_item.content = "a" * 200
+      @schedule_item.status = 1
+      is_expected.to be true
+    end
+
+    it '正常値(最小)が正しいこと' do
+      @schedule_item.content = "a"
+      @schedule_item.status = 0
+      is_expected.to be true
+    end
+  end
+
+  describe '異常性確認' do
+    subject { @schedule_item.valid? }
+
+    describe 'content' do
+      it '空文字の時、不正となること' do
+        @schedule_item.content = " " * 3
+        is_expected.not_to be true
+      end
+
+      it 'nilの時、不正となること' do
+        @schedule_item.content = nil
+        is_expected.not_to be true
+      end
+
+      it '数値が範囲外(以上)の時、不正となること' do
+        @schedule_item.content = "a" * 201
+        is_expected.not_to be true
+      end
+    end
+
+
+    describe 'status' do
+      it '空文字の時、不正となること' do
+        @schedule_item.status = " " * 1
+        is_expected.not_to be true
+      end
+
+      it 'nilの時、不正となること' do
+        @schedule_item.status = nil
+        is_expected.not_to be true
+      end
+
+      it '数値が範囲外(以上)の時、不正となること' do
+        @schedule_item.status = 2
+        is_expected.not_to be true
+      end
+
+      it '数値が範囲外(以下)の時、不正となること' do
+        @schedule_item.status = -1
+        is_expected.not_to be true
+      end
+
+      it '数値以外の時、不正となること' do
+        @schedule_item.status = "a"
+        is_expected.not_to be true
+      end
+    end
+  end
+
+end

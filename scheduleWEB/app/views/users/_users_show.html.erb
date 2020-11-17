@@ -1,0 +1,28 @@
+<div class="container">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>LineID</th>
+        <th>UserType</th>
+        <th>ステータス</th>
+        <th>作成日</th>
+        <th></th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% users.each do |user| %>
+        <tr>
+          <th scope="row"><%= link_to user["line_id"], "/users/#{user["line_id"]}" %></th>
+          <td><%= user["user_type"] %></td>
+          <td><%= user["status"] %></td>
+          <td><%= user["created_at"] %></td>
+          <td><%= link_to "編集", '#' %></td>
+          <td><%= link_to "削除", "/users/#{user["line_id"]}", method: :delete %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+
+

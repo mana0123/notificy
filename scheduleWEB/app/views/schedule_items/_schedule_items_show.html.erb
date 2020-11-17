@@ -1,0 +1,40 @@
+<div class="container">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>通知内容</th>
+        <th>ステータス</th>
+        <th>設定日</th>
+        <th>曜日</th>
+        <th></th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% schedule_items.each do |schedule_item| %>
+        <tr>
+          <th scope="row"><%= schedule_item["id"] %></th>
+          <td><%= schedule_item["content"] %></td>
+          <td><%= schedule_item["status"] %></td>
+          <td>
+            <% schedule_item["dates"].each do |date| %>
+              <%= schedule_item_date_format(date) %> <br>
+            <% end %>
+          </td>
+          <td>
+            <% schedule_item["dates"].each do |date| %>
+              <%= week_str(date["week"]) %> <br>
+            <% end %>
+          </td>
+
+          <td><%= link_to "削除", "/users/#{user["line_id"]}/schedule_items/#{schedule_item['id']}", method: :delete %></td>
+          <td><%= link_to "編集", '#' %></td>
+
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+
+

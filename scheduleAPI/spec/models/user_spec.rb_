@@ -1,0 +1,90 @@
+require 'rails_helper'
+
+RSpec.describe User, type: :model do
+
+  before do
+    @user = User.new(
+      room_id: 1234,
+      status: 1 ) 
+  end
+
+  describe '正常性確認' do 
+    it '正常値(最大)が正しいこと' do
+      @user.room_id = 999999999
+      @user.status = 1
+      expect(@user.valid?).to be true
+    end
+
+    it '正常値(最小)が正しいこと' do
+      @user.room_id = 1
+      @user.status = 0
+      expect(@user.valid?).to be true
+    end
+  end
+
+  describe '異常値確認' do
+    describe 'room_id' do
+      it '空文字の時、不正となること' do
+        @user.room_id = " " * 3
+        expect(@user.valid?).not_to be true
+      end
+
+      it 'nilの時、不正となること' do
+        @user.room_id = nil
+        expect(@user.valid?).not_to be true
+      end 
+
+      it '数値が範囲外(以上)の時、不正となること' do
+        @user.room_id = 1000000000
+        expect(@user.valid?).not_to be true
+      end
+
+      it '数値が範囲外(以下)の時、不正となること' do
+        @user.room_id = 0
+        expect(@user.valid?).not_to be true
+      end
+
+      it '数値以外の時、不正となること' do
+        @user.room_id = "aaa"
+        expect(@user.valid?).not_to be true
+      end
+
+      it '一意でない時、不正となること' do
+        duplicate_user = @user.dup
+        @user.save
+        expect(duplicate_user.valid?).not_to be true
+      end
+    end
+
+    describe 'status' do
+      it '空文字の時、不正となること' do
+        @user.status = " " * 1
+        expect(@user.valid?).not_to be true
+      end
+
+      it 'nilの時、不正となること' do
+        @user.status = nil
+        expect(@user.valid?).not_to be true
+      end
+
+      it '数値が範囲外(以上)の時、不正となること' do
+        @user.status = 2
+        expect(@user.valid?).not_to be true
+      end
+
+      it '数値が範囲外(以下)の時、不正となること' do
+        @user.status = -1
+        expect(@user.valid?).not_to be true
+      end
+
+      it '数値以外の時、不正となること' do
+        @user.status = "a"
+        expect(@user.valid?).not_to be true
+      end
+
+
+    end
+  end
+
+
+end
