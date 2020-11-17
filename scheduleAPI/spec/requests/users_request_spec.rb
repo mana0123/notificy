@@ -24,42 +24,95 @@ RSpec.describe 'Users', type: :request do
       expect(response.status).to eq(200)
       expect(json['users'].length).to eq(10)
     end
+
+    it 'get all users but no user' do
+      @users.each do |user|
+        user.destroy
+      end
+
+      get '/users'
+      json = JSON.parse(response.body)
+
+      expect(response.status).to eq(200)
+      expect(json['users'].length).to eq(0)
+
+    end
   end
 
   describe 'POST /users' do
-    it 'make new users user_type room' do
-      
-      valid_params = { user_type: 'room', line_id: '11111abcd' }
+    describe 'normal test' do
+      it 'make new users user_type room' do
+        valid_params = { user_type: 'room', line_id: '11111abcd' }
+        expect { 
+          post '/users', params: valid_params 
+        }.to change(User, :count).by(+1)
+        json = JSON.parse(response.body)
 
-      expect { post '/users', params: valid_params  }.to change(User, :count).by(+1)
-      json = JSON.parse(response.body)
+        expect(response.status).to eq(200)
+        expect(json['user']['line_id']).to eq("11111abcd")
+      end
 
-      expect(response.status).to eq(200)
-      expect(json['user']['line_id']).to eq("11111abcd")
+      it 'make new users user_type user' do
+
+        valid_params = { user_type: 'user', line_id: '11111abcd' }
+        expect { 
+          post '/users', params: valid_params
+        }.to change(User, :count).by(+1)
+        json = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(json['user']['line_id']).to eq("11111abcd")
+      end
+
+      it 'make new users user_type group' do
+
+        valid_params = { user_type: 'group', line_id: '11111abcd' }
+        expect {
+          post '/users', params: valid_params  
+        }.to change(User, :count).by(+1)
+        json = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(json['user']['line_id']).to eq("11111abcd")
+      end
     end
 
-    it 'make new users user_type user' do
+    describe 'abnormal test' do
+      it 'not exist user_type request' do
+        valid_params = { user_type: 'test', line_id: '11111abcd' }
 
-      valid_params = { user_type: 'user', line_id: '11111abcd' }
+        expect {
+          post '/users', params: valid_params
+        }.to change(User, :count).by(0)
+        json = JSON.parse(response.body)
 
-      expect { post '/users', params: valid_params  }.to change(User, :count).by(+1)
-      json = JSON.parse(response.body)
+        expect(response.status).to eq(400)
+        expect(json['messages'].length).to be >= 1
+      end
 
-      expect(response.status).to eq(200)
-      expect(json['user']['line_id']).to eq("11111abcd")
+      it 'user_type is empty' do
+        valid_params = { user_type: '', line_id: '11111abcd' }
+
+        expect {
+          post '/users', params: valid_params
+        }.to change(User, :count).by(0)
+        json = JSON.parse(response.body)
+        expect(response.status).to eq(400)
+        expect(json['messages'].length).to be >= 1
+      end
+
+      it 'line_id is no param' do
+        valid_params = { user_type: 'room' }
+
+        expect {
+          post '/users', params: valid_params
+        }.to change(User, :count).by(0)
+        json = JSON.parse(response.body)
+
+        expect(response.status).to eq(400)
+        expect(json['messages'].length).to be >= 1
+      end
     end
-
-    it 'make new users user_type group' do
-
-      valid_params = { user_type: 'group', line_id: '11111abcd' }
-
-      expect { post '/users', params: valid_params  }.to change(User, :count).by(+1)
-      json = JSON.parse(response.body)
-
-      expect(response.status).to eq(200)
-      expect(json['user']['line_id']).to eq("11111abcd")
-    end
-
   end
 
   describe 'PUT /users/:id' do
@@ -77,22 +130,46 @@ RSpec.describe 'Users', type: :request do
   end
 
   describe 'DELETE /users/:id' do
-    it 'delete user' do
-      # 削除対象のユーザ
-      user = @users[0]
+    describe 'normal test' do
+      it 'delete user' do
+        # 削除対象のユーザ
+        user = @users[0]
   
-      # 【事前確認】削除対象のユーザが存在することを確認
-      expect(User.find_by(line_id: user.line_id)).to eq(user)
+        # 【事前確認】削除対象のユーザが存在することを確認
+        expect(User.find_by(line_id: user.line_id)).to eq(user)
 
-      # 実行＆確認
-      expect { 
-        delete "/users/#{user.id}" 
-      }.to change(User, :count).by(-1).and change(
-      ScheduleItem, :count).by(-10).and change(
-      ScheduleItemDate, :count).by(-20)
+        # 実行＆確認
+        expect { 
+          delete "/users/#{user.id}" 
+        }.to change(User, :count).by(-1).and change(
+        ScheduleItem, :count).by(-10).and change(
+        ScheduleItemDate, :count).by(-20)
   
-      expect(User.find_by(line_id: user.line_id)).to eq(nil)
-      expect(response.status).to eq(200)
+        expect(User.find_by(line_id: user.line_id)).to eq(nil)
+        expect(response.status).to eq(200)
+      end
+    end
+
+    describe 'abnormal test' do
+      it 'delete not exist user' do
+
+        # 削除対象ユーザ
+        user_id = "test"
+         
+        # 【事前確認】削除対象のユーザが存在することを確認
+        expect(User.find_by(line_id: user_id)).to eq(nil)
+
+        # 実行＆確認
+        expect {
+          delete "/users/#{user_id}"
+        }.to change(User, :count).by(0).and change(
+        ScheduleItem, :count).by(0).and change(
+        ScheduleItemDate, :count).by(0)
+        json = JSON.parse(response.body)
+
+        expect(response.status).to eq(404)
+        expect(json['messages'].length).to be >= 1
+      end
     end
   end
 end

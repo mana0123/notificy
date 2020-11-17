@@ -10,10 +10,14 @@ before_action :user_exist, only: [:show, :update, :destroy]
 
   # POST /users
   def create
-
-    @user = User.create(post_user)
-    render status: :ok 
-
+    @user = User.new(post_user)
+    if @user.save
+      render status: :ok
+    else
+      @messages = []
+      @user.errors.full_messages.each { |message| @messages << message }
+      render "layouts/error", status: :bad_request
+    end
   end
 
   # GET /users/:id
@@ -42,15 +46,20 @@ before_action :user_exist, only: [:show, :update, :destroy]
 
   # DELETE /users/:id
   def destroy
-    @user.destroy
-    render status: :ok 
+    if @user.destroy
+      render status: :ok
+    else
+      @messages = []
+      @user.errors.full_messages.each { |message| @messages << message }
+      render "layouts/error", status: :bad_request
+    end 
   end
 
   private
     def user_exist
       unless @user = User.find_by(line_id: params[:id])
         @messages = ["id(#{params[:id]}) is not found"]
-        render status: :not_found
+        render "layouts/error", status: :not_found
         return
       end
     end

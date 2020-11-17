@@ -74,6 +74,7 @@ $ git commit -m "Finish static pages"
 $ git checkout master
 $ git merge static-pages
 $ git push
+$ git push -u origin master
 ```
 
 ## Railsコマンド
