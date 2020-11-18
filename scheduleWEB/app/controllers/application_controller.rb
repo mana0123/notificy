@@ -1,6 +1,15 @@
 class ApplicationController < ActionController::Base
 
+  include SessionsHelper
+
   private
+    
+    def logged_in_user
+      unless logged_in?
+        redirect_to login_url
+      end
+    end
+
     def send_schedule_api(path, method, **args)
       url = URI.parse(Constants::SCHEDULE_API_URI + path)
       case method

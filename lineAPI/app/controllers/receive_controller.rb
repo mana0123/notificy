@@ -5,8 +5,19 @@ class ReceiveController < ApplicationController
 
   def create
     
+    # destinationの検証
+    unless valid_destination
+      logger.warn "destination is invalid:"
+      head :bad_request
+      return
+    end
+
     # 署名の検証
-    render status: :ok unless valid_signature
+    unless valid_signature
+      logger.warn "signature is invalid:"
+      head :bad_request
+      return
+    end
 
     params[:events].each do |event|
       case event[:type]
@@ -16,6 +27,7 @@ class ReceiveController < ApplicationController
         receive_delete_user event
       end    
     end
+    head :ok
   end
 
   private
@@ -41,9 +53,9 @@ class ReceiveController < ApplicationController
       when :delete then
         req = Net::HTTP::Delete.new(url.path)
       end
-      logger.debug("start #{method} to schedule_api\n" + req.inspect)
+      logger.debug("start #{method} to schedule_api\n to:#{url}\n param:#{req.body}\n")
       res = Net::HTTP.start(url.host, url.port) { |http| http.request(req) }
-      logger.debug("end #{method} to schedule_api\n" + res.inspect)
+      logger.debug("end #{method} to schedule_api\n #{res.header}\n #{res.body}")
       res
     end
 
@@ -61,6 +73,7 @@ class ReceiveController < ApplicationController
     end
 
     def valid_signature
+
       http_request_body = request.raw_post # Request body string
       hash = OpenSSL::HMAC::digest(OpenSSL::Digest::SHA256.new, 
               Constants::LINE_CHANNEL_SECRET, http_request_body)
@@ -68,5 +81,8 @@ class ReceiveController < ApplicationController
       signature == request.headers['X-Line-Signature']
     end
 
+    def valid_destination
+      params[:destination] == Constants::LINE_USER_ID
+    end
     
 end

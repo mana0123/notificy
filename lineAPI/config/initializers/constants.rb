@@ -11,6 +11,13 @@ module Constants
   end
 
 
+  # LINEのユーザID
+  File.open('config/line_user.id') do |file|
+    file.each_line do |line|
+      LINE_USER_ID = line.chomp
+    end
+  end
+
   if Rails.env == "production"
       ## 本番の定数
   else

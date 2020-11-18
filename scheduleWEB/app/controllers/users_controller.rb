@@ -3,6 +3,8 @@ class UsersController < ApplicationController
   require 'net/http'
   require 'uri'
 
+  before_action :logged_in_user
+
   def index
     res = send_schedule_api("users", :get)
     res_data = JSON.parse(res.body)

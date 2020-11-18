@@ -1,7 +1,8 @@
 class ScheduleItemsController < ApplicationController
-
   require 'net/http'
   require 'uri'
+
+  before_action :logged_in_user
 
   def new
     @user_id = params[:id]
