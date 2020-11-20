@@ -17,6 +17,7 @@ services:
                         - db
                 environment:
                         RAILS_ENV: production
+                        SECRET_KEY_BASE: ${SECRET_KEY_BASE}
 
         web_ap:
                 build:
@@ -31,6 +32,7 @@ services:
                         - api
                 environment:
                         RAILS_ENV: production
+                        SECRET_KEY_BASE: ${SECRET_KEY_BASE}
 
         line_api:
                 build:
@@ -45,6 +47,7 @@ services:
                         - api
                 environment:
                         RAILS_ENV: production
+                        SECRET_KEY_BASE: ${SECRET_KEY_BASE}
 
         web:
                 image: nginx
