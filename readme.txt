@@ -95,6 +95,9 @@ docker-compose run --rm api rails console
 docker-compose run --rm api rails db:seed
 User.column_names
 
+
+docker-compose -f docker-compose.prod.ym
+
 ## Rails Tips
 * テストのREDとGREEN
 test/test_helper.rb
