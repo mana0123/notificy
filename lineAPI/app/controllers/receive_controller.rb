@@ -6,11 +6,11 @@ class ReceiveController < ApplicationController
   def create
     
     # destinationの検証
-    unless valid_destination
-      logger.warn "destination is invalid:"
-      head :bad_request
-      return
-    end
+#     unless valid_destination
+#      logger.warn "destination is invalid:"
+#      head :bad_request
+#      return
+#    end
 
     # 署名の検証
     unless valid_signature
