@@ -52,7 +52,7 @@ services:
         web:
                 image: nginx
                 ports:
-                        - "80:80"
+                        - "443:443"
                 depends_on:
                         - line_api
                         - web_ap
@@ -60,3 +60,4 @@ services:
                         - ./web/log:/var/log/nginx
                         - ./web/default.conf:/etc/nginx/conf.d/default.conf
                         - ./scheduleWEB/public:/usr/share/nginx/public
+                        - /etc/letsencrypt:/etc/letsencrypt
