@@ -9,6 +9,8 @@ class UsersController < ApplicationController
     res = send_schedule_api("users", :get)
     res_data = JSON.parse(res.body)
     @users = res_data["users"]
+
+    @admin_users = User.all
   end
 
   def create

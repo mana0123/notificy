@@ -1,4 +1,10 @@
 <h1>UserList</h1>
+<h2>Admin User</h2>
+<div class="container">
+  <%= render  'admin_users_show', admin_users:  @admin_users %>
+</div>
+
+<h2>Line User</h2>
 <div class="container">
   <%= render  'users_show', users:  @users %>
 </div>
