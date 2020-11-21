@@ -1,7 +1,7 @@
 class SessionsController < ApplicationController
 
   def new
-
+    not_logged_in_user
   end
 
   def create
