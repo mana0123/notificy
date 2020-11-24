@@ -56,6 +56,8 @@ GEM
       minitest (~> 5.1)
       tzinfo (~> 1.1)
       zeitwerk (~> 2.2, >= 2.2.2)
+    aes_key_wrap (1.1.0)
+    bindata (2.4.8)
     binding_of_caller (0.8.0)
       debug_inspector (>= 0.0.1)
     bootsnap (1.4.8)
@@ -80,6 +82,10 @@ GEM
       concurrent-ruby (~> 1.0)
     jbuilder (2.10.1)
       activesupport (>= 5.0.0)
+    json-jwt (1.13.0)
+      activesupport (>= 4.2)
+      aes_key_wrap
+      bindata
     listen (3.2.1)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
@@ -195,6 +201,7 @@ DEPENDENCIES
   byebug
   factory_bot_rails
   jbuilder (~> 2.7)
+  json-jwt
   listen (~> 3.2)
   pry-byebug
   pry-doc

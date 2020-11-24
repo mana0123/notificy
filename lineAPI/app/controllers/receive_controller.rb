@@ -1,8 +1,5 @@
 class ReceiveController < ApplicationController
 
-  require 'net/http'
-  require 'uri'
-
   def create
     
     # destinationの検証
@@ -33,30 +30,12 @@ class ReceiveController < ApplicationController
   private
     
     def receive_create_user(param_event)
-      send_schedule_api("users", :post, form_data: params_create_user(param_event))
+      send_api(:schedule, "users", :post, content_type: 'application/json', form_data: params_create_user(param_event))
     end
 
     def receive_delete_user(param_event)
       user = params_create_user(param_event)
-      send_schedule_api("users/#{user[:line_id]}", :delete)
-    end
-
-    def send_schedule_api(path, method, **args)
-      url = URI.parse(Constants::SCHEDULE_API_URI + path)
-      case method
-      when :get then
-        req = Net::HTTP::Get.new(url.path)
-      when :post then
-        req = Net::HTTP::Post.new(url.path)
-        req.content_type = 'application/json'
-        req.body = args[:form_data].to_json
-      when :delete then
-        req = Net::HTTP::Delete.new(url.path)
-      end
-      logger.debug("start #{method} to schedule_api\n to:#{url}\n param:#{req.body}\n")
-      res = Net::HTTP.start(url.host, url.port) { |http| http.request(req) }
-      logger.debug("end #{method} to schedule_api\n #{res.header}\n #{res.body}")
-      res
+      send_api(:schedule, "users/#{user[:line_id]}", :delete)
     end
 
     def params_create_user(params_event)

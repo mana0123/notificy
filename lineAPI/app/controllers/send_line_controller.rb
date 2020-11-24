@@ -1,0 +1,2 @@
+class SendLineController < ApplicationController
+end
