@@ -39,6 +39,13 @@ module Constants
   }
   LINE_ASSERTION_SIGN_KEY = str
 
+  # LINEのチャンネルアクセストークン
+  file = open('/var/line/access_token/latest/channel_access_token')
+  lines = file.read().split("\n")
+  LINE_CHANNEL_ACCESS_TOKEN_KEYID = lines[0]
+  LINE_CHANNEL_ACCESS_TOKEN = lines[1]
+  file.close
+
   if Rails.env == "production"
       ## 本番の定数
   else
