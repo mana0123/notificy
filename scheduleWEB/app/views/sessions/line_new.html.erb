@@ -1,0 +1,5 @@
+<h2>登録ページへ移動する場合は以下のボタンを押下してください。</h2>
+<%= button_to "登録ページへ移動", login_line_user_path, { params: { id: @id, token: @token }, class: "btn btn-primary"} %>
+<br>
+<p>※有効期限はURL発行後30分以内です。<br>
+※本URLは1回のみ有効です。無効の場合は再度登録URLを発行してください。</p>

@@ -1,7 +1,8 @@
 class SessionsController < ApplicationController
+  before_action :not_logged_in_user, only: [:new, :create, :line_new, :line_user]
+  before_action :logged_in_user, only: [:destroy]
 
   def new
-    not_logged_in_user
   end
 
   def create
@@ -17,6 +18,11 @@ class SessionsController < ApplicationController
   def destroy
     log_out
     redirect_to '/login'
+  end
+
+  def line_new 
+    @id = params[:id]
+    @token = params[:token]
   end
 
   def line_user 

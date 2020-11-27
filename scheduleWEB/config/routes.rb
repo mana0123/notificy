@@ -3,7 +3,8 @@ Rails.application.routes.draw do
   get '/login', to: 'sessions#new'
   post '/login', to: 'sessions#create'
   delete '/logout', to: 'sessions#destroy'
-  get '/login/line_user', to: 'sessions#line_user'
+  get '/login/line_user', to: 'sessions#line_new'
+  post '/login/line_user', to: 'sessions#line_user'
 
   post '/api/onetime_session', to:'api#onetime_session'
 
