@@ -4,6 +4,10 @@ class UsersController < ApplicationController
   require 'uri'
 
   before_action :logged_in_user
+  before_action ->{ 
+    logged_in_admin_or_current_user(params[:id]) 
+  }, only: [:create, :show, :edit, :destroy]
+  before_action :logged_in_admin_user, only: [:index]
 
   def index
     res = send_schedule_api("users", :get)
