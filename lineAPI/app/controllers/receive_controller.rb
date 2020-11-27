@@ -59,10 +59,10 @@ class ReceiveController < ApplicationController
       res_body = JSON.parse(res.body)
       return if res_body["access_url"].nil?
 
-      text = "登録URL:\n#{res_body["access_url"]}\n※有効期限はURL発行後30分以内です。\n※本URLは1回のみ有効です。}"
+      text = "登録URL:\n#{res_body["access_url"]} \n※有効期限はURL発行後30分以内です。\n※本URLは1回のみ有効です。"
       reply_form = { replyToken: param_event["replyToken"], 
-                     messages: { 
-                       type: "text", text: text } }
+                     messages: [ 
+                      { type: "text", text: text } ] }
       send_api(:line, 'v2/bot/message/push', :post, content_type: 'application/json', form_data: reply_form)
     end
 
