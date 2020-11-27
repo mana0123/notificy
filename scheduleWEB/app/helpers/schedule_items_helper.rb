@@ -18,13 +18,13 @@ module ScheduleItemsHelper
     str = week_dainan == 0 ? "*" : "第#{week_dainan}"
     
     case week_youbi
-      when 1 then str += "月曜日"
-      when 2 then str += "火曜日"
-      when 3 then str += "水曜日"
-      when 4 then str += "木曜日"
-      when 5 then str += "金曜日"
-      when 6 then str += "土曜日"
-      when 7 then str += "日曜日"
+      when 1 then str += "日曜日"
+      when 2 then str += "月曜日"
+      when 3 then str += "火曜日"
+      when 4 then str += "水曜日"
+      when 5 then str += "木曜日"
+      when 6 then str += "金曜日"
+      when 7 then str += "土曜日"
     end
     
   end

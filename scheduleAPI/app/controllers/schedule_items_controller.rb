@@ -1,5 +1,6 @@
 class ScheduleItemsController < ApplicationController
 
+  include GetRecord
   before_action :user_exist, only: [:index, :create]
   before_action :user_and_item_exist, only: [:show, :update, :destroy]
   before_action :check_param_format, only: [:create]
@@ -109,16 +110,5 @@ class ScheduleItemsController < ApplicationController
         return
       end
     end
-
-    def select_schedule_items_join_date(**where)
-      schedule_items = []
-      ScheduleItem.eager_load(:schedule_item_dates)
-                .where(where).each do |schedule_item|
-        schedule_items << {schedule_item: schedule_item,
-                        schedule_item_dates: schedule_item.schedule_item_dates}
-      end
-      schedule_items
-    end
-    
 
 end

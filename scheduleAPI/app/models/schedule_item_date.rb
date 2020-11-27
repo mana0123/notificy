@@ -3,7 +3,7 @@ class ScheduleItemDate < ApplicationRecord
   # year : integer
   # month : integer
   # week : integer (2桁:　
-  #                  1桁目 曜日　⇒　1:月,2:火,・・・,7:日
+  #                  1桁目 曜日　⇒　1:日,2:月,・・・,7:土
   #                  2桁目 第何曜日　⇒　0:毎週,1:第一,・・・,5:第五)
   # day : integer
   # hour : integer
@@ -40,6 +40,13 @@ class ScheduleItemDate < ApplicationRecord
   validate  :date_format_valid
 
   belongs_to :schedule_item
+
+  # 日付からweekの値を算出する
+  def ScheduleItemDate.date_to_week(t)
+    week = t.wday + 1
+    dainan = t.day / 7 + 1
+    week * 10 + dainan
+  end
 
   private
     # weekのフォーマットチェック
