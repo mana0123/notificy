@@ -7,7 +7,7 @@ module ConnApi
   extend ActiveSupport::Concern
 
   # APIにHTTP接続するメソッド
-  # api_srv : 接続先API　[:line, :schedule] 
+  # api_srv : 接続先API　[:line, :schedule, :web_ap] 
   # path    : 接続先パス　string 
   # method  : HTTPメソッド　[:get, :post, :delete]
   # args    : リクエストパラメータがある場合は必須
@@ -21,6 +21,8 @@ module ConnApi
         domain = Constants::LINE_API_URI
       when :schedule
         domain = Constants::SCHEDULE_API_URI
+      when :web_ap
+        domain = Constants::WEB_AP_URI
     end
     
     url = URI.parse(domain + path)

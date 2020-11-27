@@ -2,8 +2,13 @@ module Constants
 
   # scheduleAPIのURL
   SCHEDULE_API_URI = "http://api:3000/"
-
-  LINE_API_URI = "https://api.line.me/"
+  WEB_AP_URI = "http://web_ap:3030/"
+  
+  if Rails.env == "production"
+      LINE_API_URI = "https://api.line.me/"
+  else
+      LINE_API_URI = "https://dummiy/"
+  end
 
 
   # LINEのチャネルシークレット

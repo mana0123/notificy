@@ -22,6 +22,8 @@ class ReceiveController < ApplicationController
         receive_create_user event
       when "unfollow","leave"
         receive_delete_user event
+      when "message"
+        receive_message event
       end    
     end
     head :ok
@@ -30,12 +32,38 @@ class ReceiveController < ApplicationController
   private
     
     def receive_create_user(param_event)
-      send_api(:schedule, "users", :post, content_type: 'application/json', form_data: params_create_user(param_event))
+      send_api(:schedule, "users", :post, 
+               content_type: 'application/json', 
+               form_data: params_create_user(param_event))
     end
 
     def receive_delete_user(param_event)
       user = params_create_user(param_event)
       send_api(:schedule, "users/#{user[:line_id]}", :delete)
+    end
+
+    def receive_message(param_event)
+      if param_event[:message][:type] == "text"
+        case param_event[:message][:text]
+        when "登録"
+          receive_message_touroku(param_event)
+        end
+      end
+    end
+
+    def receive_message_touroku(param_event)
+      user = params_create_user(param_event)
+      res = send_api(:web_ap, "api/onetime_session", :post,
+                     content_type: 'application/json', 
+                     form_data: { name: user[:line_id] })
+      res_body = JSON.parse(res.body)
+      return if res_body["access_url"].nil?
+
+      text = "登録URL:\n#{res_body["access_url"]}\n※有効期限はURL発行後30分以内です。\n※本URLは1回のみ有効です。}"
+      reply_form = { replyToken: param_event["replyToken"], 
+                     messages: { 
+                       type: "text", text: text } }
+      send_api(:line, 'v2/bot/message/push', :post, content_type: 'application/json', form_data: reply_form)
     end
 
     def params_create_user(params_event)

@@ -16,7 +16,7 @@ services:
                 depends_on:
                         - db
 
-        web:
+        web_ap:
                 build:
                   context: ./scheduleWEB
                   dockerfile: Dockerfile.dev
@@ -40,3 +40,4 @@ services:
                         - "3040:3040"
                 depends_on:
                         - api
+                        - web_ap

@@ -11,13 +11,8 @@ RSpec.describe "Receives", type: :request do
              "type": "join", "mode": "active", "timestamp": 1462629479859,
              "source": { "type": "room", "roomId": "Ra8dbf4673c",
              "userId": "U4af4980629" } } ]}'
-        signature = Base64.strict_encode64(
-                    OpenSSL::HMAC::digest(OpenSSL::Digest::SHA256.new,
-                    Constants::LINE_CHANNEL_SECRET, json_body))
-        request_header = { 
-          'CONTENT_TYPE' => 'application/json', 
-          'ACCEPT' => 'application/json' , 
-          'X-Line-Signature' => signature }
+        signature = create_signature(json_body)
+        request_header = set_header(signature)
 
         post "/receive", params: json_body, headers: request_header
 
@@ -32,13 +27,8 @@ RSpec.describe "Receives", type: :request do
              "type": "leave", "mode": "active", "timestamp": 1462629479859,
              "source": { "type": "room", "roomId": "Ra8dbf4673c",
              "userId": "U4af4980629"} } ]}'
-        signature = Base64.strict_encode64(
-                    OpenSSL::HMAC::digest(OpenSSL::Digest::SHA256.new,
-                    Constants::LINE_CHANNEL_SECRET, json_body))
-        request_header = { 
-          'CONTENT_TYPE' => 'application/json', 
-          'ACCEPT' => 'application/json' , 
-          'X-Line-Signature' => signature }
+        signature = create_signature(json_body)
+        request_header = set_header(signature)
 
         post "/receive", params: json_body, headers: request_header
 
@@ -50,13 +40,27 @@ RSpec.describe "Receives", type: :request do
         json_body =
         '{ "destination": "Ufa595128e0baa511c3ee236f87e4b2fa",
            "events": [] }'
-        signature = Base64.strict_encode64(
-                    OpenSSL::HMAC::digest(OpenSSL::Digest::SHA256.new,
-                    Constants::LINE_CHANNEL_SECRET, json_body))
-        request_header = {
-          'CONTENT_TYPE' => 'application/json',
-          'ACCEPT' => 'application/json' ,
-          'X-Line-Signature' => signature}
+        signature = create_signature(json_body)
+        request_header = set_header(signature)
+
+        post "/receive", params: json_body, headers: request_header
+
+        expect(response.status).to eq(200)
+      end
+
+      it "post messages tourokou" do
+        json_body =
+        '{ "destination": "Ufa595128e0baa511c3ee236f87e4b2fa",
+           "events": [ {
+             "replyToken": "nHuyWiB7yP5Zw52FIkcQobQuGDXCTA",
+             "type": "message", "mode": "active", "timestamp": 1462629479859,
+             "source": { "type": "room", "roomId": "Ra8dbf4673c",
+               "userId": "U4af4980629" } ,
+             "message": { "id": "325708", "type": "text",
+               "text": "登録" }
+           } ] }'
+        signature = create_signature(json_body)
+        request_header = set_header(signature)
 
         post "/receive", params: json_body, headers: request_header
 
@@ -72,13 +76,8 @@ RSpec.describe "Receives", type: :request do
              "replyToken": "nHuyWiB7yP5Zw52FIkcQobQuGDXCTA",
              "type": "test", "mode": "active", "timestamp": 1462629479859
              } ] }'
-        signature = Base64.strict_encode64(
-                    OpenSSL::HMAC::digest(OpenSSL::Digest::SHA256.new,
-                    Constants::LINE_CHANNEL_SECRET, json_body))
-        request_header = {
-          'CONTENT_TYPE' => 'application/json',
-          'ACCEPT' => 'application/json' ,
-          'X-Line-Signature' => signature }
+        signature = create_signature(json_body)
+        request_header = set_header(signature)
 
         post "/receive", params: json_body, headers: request_header
         
@@ -95,15 +94,9 @@ RSpec.describe "Receives", type: :request do
              "type": "leave", "mode": "active", "timestamp": 1462629479859,
              "source": { "type": "room", "roomId": "Ra8dbf4673c",
              "userId": "U4af4980629" } } ]}'
-             
-        signature = Base64.strict_encode64(
-                    OpenSSL::HMAC::digest(OpenSSL::Digest::SHA256.new,
-                    Constants::LINE_CHANNEL_SECRET, json_body))
-         
-        request_header = {
-          'CONTENT_TYPE' => 'application/json',
-          'ACCEPT' => 'application/json' ,
-          'X-Line-Signature' => signature }
+
+        signature = create_signature(json_body)             
+        request_header = set_header(signature)         
 
         post "/receive", params: json_body, headers: request_header
 
@@ -118,15 +111,8 @@ RSpec.describe "Receives", type: :request do
              "type": "join", "mode": "active", "timestamp": 1462629479859,
              "source": { "type": "room", "roomId": "Ra8dbf4673c",
              "userId": "U4af4980629" } } ]}'
-
-        signature = Base64.strict_encode64(
-                    OpenSSL::HMAC::digest(OpenSSL::Digest::SHA256.new,
-                    Constants::LINE_CHANNEL_SECRET, json_body))
-
-        request_header = {
-          'CONTENT_TYPE' => 'application/json',
-          'ACCEPT' => 'application/json' ,
-          'X-Line-Signature' => signature + "A" }
+        
+        request_header = set_header("test")
 
         post "/receive", params: json_body, headers: request_header
 
@@ -142,19 +128,26 @@ RSpec.describe "Receives", type: :request do
              "source": { "type": "room", "roomId": "Ra8dbf4673c",
              "userId": "U4af4980629" } } ]}'
 
-        signature = Base64.strict_encode64(
-                    OpenSSL::HMAC::digest(OpenSSL::Digest::SHA256.new,
-                    Constants::LINE_CHANNEL_SECRET, json_body))
-
-        request_header = {
-          'CONTENT_TYPE' => 'application/json',
-          'ACCEPT' => 'application/json' ,
-          'X-Line-Signature' => signature }
+        signature = create_signature(json_body)
+        request_header = set_header(signature)
 
         post "/receive", params: json_body, headers: request_header
 
         expect(response.status).to eq(400)
       end
     end
+  end
+
+  def create_signature(body)
+    signature = Base64.strict_encode64(
+                OpenSSL::HMAC::digest(OpenSSL::Digest::SHA256.new,
+                Constants::LINE_CHANNEL_SECRET, body))
+  end
+
+  def set_header(signature)
+    request_header = {
+          'CONTENT_TYPE' => 'application/json',
+          'ACCEPT' => 'application/json' ,
+          'X-Line-Signature' => signature }
   end
 end
