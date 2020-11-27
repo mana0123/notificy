@@ -63,7 +63,7 @@ class ReceiveController < ApplicationController
       reply_form = { replyToken: param_event["replyToken"], 
                      messages: [ 
                       { type: "text", text: text } ] }
-      send_api(:line, 'v2/bot/message/push', :post, content_type: 'application/json', form_data: reply_form)
+      send_api(:line, 'v2/bot/message/reply', :post, content_type: 'application/json', form_data: reply_form)
     end
 
     def params_create_user(params_event)
