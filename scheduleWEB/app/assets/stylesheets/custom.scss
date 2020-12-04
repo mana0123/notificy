@@ -27,3 +27,50 @@ h2 {
   margin-bottom: 10px;
   font-weight: normal;
 }
+
+.fixed_type, .rooped_type {
+  margin-left: 20px;
+  
+  input, select {
+    margin-right: 5px; 
+  }
+}
+
+.date_field {
+  .date_field_item_left {
+    display: inline-block;
+    padding-right: 20px;
+  }
+  .date_field_item_middle {
+    display: inline-block;
+    width: 280px; 
+  }
+  .date_field_item_right {
+    display: inline-block;
+  }
+}
+
+#user_inform {
+ .left {
+    display: inline-block;
+    width: 100px;
+  }
+}
+
+#schedule_form {
+  button,.btn {
+    margin-top: 10px;
+  }
+}
+
+.table {
+  .content {
+    width: 200px;
+  }
+  .date {
+    width: 150px;
+  }
+  .week {
+    width: 150px;
+  }
+}

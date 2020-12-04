@@ -29,4 +29,36 @@ module ScheduleItemsHelper
     
   end
 
+  def select_box_year
+    year = {}
+    for num in Date.today.year..Date.today.year+10 do
+      year["#{num}"] = num
+    end
+    year
+  end
+
+  def select_box_month
+    month = {}
+    for num in 1..12 do
+      month["#{num}"] = num
+    end
+    month
+  end
+
+  def select_box_day
+    day = {}
+    for num in 1..31 do
+      day["#{num}"] = num
+    end
+    day
+  end
+
+  def select_box_hour
+    hour = {}
+    for num in 0..23 do
+      hour["#{num}"] = num
+    end
+    hour
+  end
+
 end
