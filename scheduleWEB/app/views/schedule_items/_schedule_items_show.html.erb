@@ -28,9 +28,8 @@
             <% end %>
           </td>
 
-          <td><%= link_to "削除", "/users/#{user["line_id"]}/schedule_items/#{schedule_item['id']}", method: :delete %></td>
-          <td><%= link_to "編集", "/users/#{user["line_id"]}/schedule_items/#{schedule_item['id']}/edit" %></td>
-
+          <td><%= button_to "編集", "/users/#{user["line_id"]}/schedule_items/#{schedule_item['id']}/edit", {method: :get, class: "btn btn-success"} %></td>
+          <td><%= button_to "削除", "/users/#{user["line_id"]}/schedule_items/#{schedule_item['id']}", {method: :delete, class: "btn btn-danger"} %></td>
         </tr>
       <% end %>
     </tbody>

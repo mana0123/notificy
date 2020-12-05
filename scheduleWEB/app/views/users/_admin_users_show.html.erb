@@ -17,8 +17,8 @@
           <td><%= user.name %></td>
           <td><%= user.status %></td>
           <td><%= user.created_at %></td>
-          <td><%= link_to "編集", '#' %></td>
-          <td><%= link_to "削除", "#" %></td>
+          <td><%= button_to "編集", schedule_items_new_user_path(id: user.id), {method: :get, class: "btn btn-success"} %></td>
+          <td><%= button_to "削除", schedule_items_new_user_path(id: user.id), {method: :get, class: "btn btn-danger"} %></td>
         </tr>
       <% end %>
     </tbody>
