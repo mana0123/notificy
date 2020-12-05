@@ -57,8 +57,44 @@ class ScheduleItemsController < ApplicationController
     render status: :ok
   end
 
-  # PUT /schedule_items/:id
+  # PATCH /schedule_items/:id
   def update
+    # schedule_item_dateは実装が面倒なため、一旦全部削除してから再度全登録している
+    # この方法だとDB負荷が高くなるので、暇なときに方式を見直す。
+    
+    logger.debug("リクエストパラメータ:" + params.inspect)
+    # インスタンス変数初期化
+    @schedule_item = @schedule_item[:schedule_item]
+    @schedule_item_dates = []
+
+    # 永続化
+    begin
+      ActiveRecord::Base.transaction do
+        # schedule_itemの永続化
+        logger.debug("user:" + @user.inspect)
+        @schedule_item.update_attributes(post_schedule_item)
+        unless @schedule_item.errors.empty?
+          raise ActiveRecord::RecordInvalid::new(@schedule_item)
+        end
+        # 全アイテム削除
+        @schedule_item.schedule_item_dates.destroy_all
+        # schedule_item_dateの永続化
+        post_schedule_item_dates.each do |post_date|
+          schedule_item_date = @schedule_item.schedule_item_dates
+                                             .create!(post_date)
+          unless schedule_item_date.errors.empty?
+            raise ActiveRecord::RecordInvalid::new(schedule_item_date)
+          end
+          @schedule_item_dates << schedule_item_date
+        end
+      end
+    rescue => e
+      @messages = [e.message]
+      render "layouts/error", status: :bad_request
+      return
+    end
+    head :ok
+
   end
 
   # DELETE /users/{user_id}/schedule_items/{id}

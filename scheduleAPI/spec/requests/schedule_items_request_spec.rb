@@ -190,24 +190,24 @@ RSpec.describe "ScheduleItems", type: :request do
     end
   end
 
-  describe 'PUT /users/{user_id}/schedule_items/{id}' do
+  describe 'PATCH /users/{user_id}/schedule_items/{id}' do
     it 'edit the schedule_items' do
-      pending '未実装'
-      schedule_item = create(:schedule_item)
+        user_id = @users[0].line_id
+        schedule_item = @users[0].schedule_items.first
 
-      put "/schedule_items/#{schedule_item.id}",
-                       params: { schedule_items: { year: schedule_item.year,
-                                       month: schedule_item.month,
-                                       week: schedule_item.week,
-                                       day: schedule_item.day,
-                                       hour: schedule_item.hour,
-                                       user_id: schedule_item.user_id,
-                                       content: "【変更後】燃えないごみの日" } }
-      json = JSON.parse(response.body)
+        valid_params = {
+          dates: [
+            { year: 2020, month: 10, week: nil, day: 30, hour: 0 },
+            { year: 2021, month: 10, week: nil, day: 30, hour: 0 },
+            { year: nil, month: 10, week: nil, day: 30, hour: 0 } ] ,
+          content: "ごみの日" }
 
-      expect(response.status).to eq(200)
-      expect(json['data']['user']['content']).to eq("【変更後】燃えないごみの日")
-      expect(ScheduleItem.find_by(id: schedule_item.id).content).to eq("【変更後】燃えないごみの日")
+        expect { patch "/users/#{user_id}/schedule_items/#{schedule_item.id}",
+               params: valid_params, as: :json }
+               .to change(ScheduleItem, :count).by(0).and change(
+               ScheduleItemDate, :count).by(+1)
+        expect(ScheduleItem.find_by(id: schedule_item.id).content).to eq("ごみの日")
+        expect(response.status).to eq(200)
     end
   end
 

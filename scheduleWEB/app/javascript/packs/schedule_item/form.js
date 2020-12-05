@@ -2,19 +2,13 @@ $(function() {
   // 初期ロード
   $(document).ready(function() {
 
-    // 「毎年」を選択
-    $('.select_rooped_type').val('1');
-    roop_type_status($('.date_field_item_middle'));
-
-    // 「日付」を選択
-    $('.rooped_month_type > input[value=date]').prop('checked', true);
-    month_roop_status($('.date_field_item_middle'));
-
-    // 「固定値」を選択
-    date_type_status($('.date_field'));
-
+    // 初期値によりフォーム表示を更新する
+    $('.date_field').each(function(index, element){
+      roop_type_status($(element).children('.date_field_item_middle'));
+      month_roop_status($(element).children('.date_field_item_middle'));
+      date_type_status($(element));
+    });
     remove_btn_display();
-
   });
 
   // 「通知日を追加」を押下

@@ -27,4 +27,11 @@ RSpec.describe "ScheduleItems", type: :request do
     end
   end
 
+  describe 'GET /users/{:user_id}/schedule_items/{:item_id}/edit' do
+    it 'get schedule_items edit' do
+      get '/users/1/schedule_items'
+      expect(response.status).to eq(200)
+    end
+  end
+
 end

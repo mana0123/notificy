@@ -1,0 +1,110 @@
+<!-- ローカル変数：user_id,method,schedule_item(更新時),item_id(更新時) -->
+
+<% schedule_item = { new_flg: true, date: [{}] } if schedule_item.nil? %>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
+<% url = ( method == :post ) ? "/users/#{user_id}/schedule_items" : "/users/#{user_id}/schedule_items/#{item_id}" %>
+<%= form_with(url: url, method: method, id: "schedule_form") do |form| %>
+
+  <%= form.label "内容"  %><br>
+  <%= form.text_area :content, value: schedule_item[:content] %><br><br>
+
+  <%= form.label "通知日" %><br>
+  <ul class="list-group">
+    <% schedule_item[:date].each_with_index do |date, index| %>
+      <li class="list-group-item date_field">
+        <% name_base = "dates[#{index}]" %>
+        <% date_type = schedule_item[:new_flg] || date_type_fixed?(date) ? "fixed" : "rooped" %>
+
+        <!-- 「固定日」or「繰り返し」 -->
+        <div class="date_field_item_left">
+          <% name = name_base + "[date_type]" %>
+          <% option = { class: "select_date_type" } %>
+          
+          <!-- 「固定日」 -->
+          <%= form.radio_button name, :fixed, { class: "select_date_type", checked: true } %>
+          <%= form.label name, "固定日", { value: :fixed } %><br>
+
+          <!-- 「繰り返し」 -->
+          <% if date_type == "rooped" %>
+            <%= form.radio_button name, :rooped, { class: "select_date_type", checked: true } %>
+          <% else %>
+            <%= form.radio_button name, :rooped, { class: "select_date_type" } %>
+          <% end %>
+          <%= form.label name, "繰り返し", { value: :rooped } %>
+        </div>
+
+        <!-- 日付入力欄 -->
+        <div class="date_field_item_middle">
+          
+          <!-- 繰り返しタイプ(毎年、毎月、毎日・・・)指定 -->
+          <% selected = { } %>
+          <% if date_type == "rooped" %>
+            <% option.store(:selected, judge_rooped_type(date)) %>
+          <% end %>    
+
+          <%= form.select name_base + "[roop_type]", { "毎年": 1, "毎月": 2, "毎週": 3 ,"毎日": 4, "毎時": 5 }, option, { class: "select_rooped_type" } %>
+
+          <!-- 日付(固定日)指定 -->
+          <% name = name_base + "[full_date]" %>
+          <% if !schedule_item[:new_flg] && date_type == "fixed" %>
+            <%= form.date_field name, min: Date.today, value: format_date_to_full_str(date) %>
+          <% else %>
+            <%= form.date_field name, min: Date.today %>
+          <% end %>
+
+          <!-- 月指定 -->
+          <%= form.select name_base + "[month]", select_box_month, { selected: date[:month] } %>
+          <span> / </span>
+
+          <!-- 日指定 -->
+          <%= form.select name_base + "[day]", select_box_day, { selected: date[:day] } %>
+
+          <!-- 週指定 -->
+          <span class="select_week">
+            <% week = format_week_to_split(date[:week]) %>
+            
+            <% if week.nil? || week[:dainan] == 0 %>
+              <%= form.select name_base + "[dainan]", select_box_dainan %>
+            <% else %>
+              <%= form.select name_base + "[dainan]", select_box_dainan, { selected: week[:dainan] } %>
+            <% end %>
+
+            <% if week.nil? %>
+              <%= form.select name_base + "[week]", select_box_week %>
+            <% else %>
+              <%= form.select name_base + "[week]", select_box_week, { selected: week[:week] } %>   
+            <% end %>
+            曜日
+          </span>
+
+          <!-- 時指定 -->
+          <%= form.select name_base + "[hour]", select_box_hour, { selected: date[:hour] } %>
+          <span> : 00</span>
+
+          <!-- 毎月繰り返し時のタイプ(日付or曜日)指定 -->
+          <div class="rooped_month_type">
+            <% name = name_base + "[month_type]" %>
+            <%= form.radio_button name, :date, checked: true %>  
+            <%= form.label name, "日付", { value: :date } %>
+
+            <% if date_type == "rooped" && judge_rooped_type(date) == 2 && !date[:week].nil? %>
+              <%= form.radio_button name, :week, checked: true %>
+            <% else %>
+              <%= form.radio_button name, :week %>
+            <% end %>
+            <%= form.label name, "曜日", { value: :week } %>
+          </div>
+        </div>
+        <div class="date_field_item_right">
+          <button type="button" class="btn btn-outline-danger date-remove" >削除</button>
+        </div>
+      </li>
+    <% end %>
+  </ul>
+  <button type="button" class="btn btn-outline-secondary" id="date-add">通知日を追加</button><br>
+  <% name = ( method == :post ) ? "作成" : "更新" %>
+  <%= form.submit name, class: "btn btn-primary" %>
+<% end %>
+
+<%= javascript_pack_tag 'schedule_item/form' %>

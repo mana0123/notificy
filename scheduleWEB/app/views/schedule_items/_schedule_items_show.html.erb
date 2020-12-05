@@ -29,7 +29,7 @@
           </td>
 
           <td><%= link_to "削除", "/users/#{user["line_id"]}/schedule_items/#{schedule_item['id']}", method: :delete %></td>
-          <td><%= link_to "編集", '#' %></td>
+          <td><%= link_to "編集", "/users/#{user["line_id"]}/schedule_items/#{schedule_item['id']}/edit" %></td>
 
         </tr>
       <% end %>

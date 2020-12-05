@@ -30,8 +30,21 @@ class ScheduleItemsController < ApplicationController
   end
 
   def edit
-    @schedule_item = send_schedule_api(
-        "users/#{params[:user_id]}/schedule_items/#{params[:id]}", :get).body["schedule_item"]
+    @user_id = params[:id]
+    @item_id = params[:item_id]
+    res = send_schedule_api(
+        "users/#{params[:id]}/schedule_items/#{params[:item_id]}", :get)
+    @schedule_item = JSON.parse(res.body)["schedule_item"].deep_symbolize_keys
+  end
+
+  def update
+    post_param = post_schedule_items_param
+
+    # ScheduleAPIにPOST送信
+    send_schedule_api("users/#{params[:user_id]}/schedule_items/#{params[:id]}",
+                      :patch, form_data: post_param)
+
+    redirect_to controller: :users, action: :show, id: params[:user_id]
   end
 
   def destroy
@@ -50,6 +63,7 @@ class ScheduleItemsController < ApplicationController
           hash[:month] = value[5..6]
           hash[:day] = value[8..9]
           hash[:week] = nil
+          hash[:hour] = date["hour"]
         else
           # それ以外(繰り返し)の場合
           hash[:year] = date["year"]

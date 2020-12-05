@@ -12,6 +12,7 @@ Rails.application.routes.draw do
     resources :schedule_items, only: [:create, :destroy, :update]
     member do
       get '/schedule_items/new', to: 'schedule_items#new'
+      get '/schedule_items/:item_id/edit', to: 'schedule_items#edit'
     end
   end
 

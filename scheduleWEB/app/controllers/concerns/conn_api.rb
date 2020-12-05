@@ -13,6 +13,10 @@ module ConnApi
       req = Net::HTTP::Post.new(url.path)
       req.content_type = 'application/json'
       req.body = args[:form_data].to_json
+    when :patch then
+      req = Net::HTTP::Patch.new(url.path)
+      req.content_type = 'application/json'
+      req.body = args[:form_data].to_json
     when :delete then
       req = Net::HTTP::Delete.new(url.path)
     end
