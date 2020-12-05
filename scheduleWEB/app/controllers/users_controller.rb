@@ -14,7 +14,7 @@ class UsersController < ApplicationController
     res_data = JSON.parse(res.body)
     @users = res_data["users"]
 
-    @admin_users = User.all
+    @admin_users = User.where( user_type: 1 )
   end
 
   def create
