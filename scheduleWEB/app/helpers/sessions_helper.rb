@@ -1,7 +1,6 @@
 module SessionsHelper
 
   def log_in(user)
-  binding.pry
     session[:user_id] = user.id
   end
 
