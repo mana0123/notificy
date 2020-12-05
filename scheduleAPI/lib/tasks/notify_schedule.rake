@@ -7,7 +7,7 @@ namespace :notify_schedule do
     where = { schedule_item_dates:
               { year: [t.year, nil], month: [t.month, nil], 
                day: [t.day, nil], hour: [t.hour, nil],
-               week: [ScheduleItemDate.date_to_week(t), t/10*10, nil] },
+               week: [ScheduleItemDate.date_to_week(t), ScheduleItemDate.date_to_week(t)/10*10, nil] },
               users: {status: 1} }
     items = select_users_join_schedule_items_and_date(where)
     items.each do |item|
