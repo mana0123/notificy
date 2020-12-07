@@ -7,18 +7,16 @@
         <th>ステータス</th>
         <th>作成日</th>
         <th></th>
-        <th></th>
       </tr>
     </thead>
     <tbody>
       <% users.each do |user| %>
         <tr>
-          <th scope="row"><%= link_to user["line_id"], "/users/#{user["line_id"]}" %></th>
+          <th scope="row"><%= link_to user["line_id"], "/users/#{user["line_id"]}/line" %></th>
           <td><%= user["user_type"] %></td>
           <td><%= user["status"] %></td>
           <td><%= user["created_at"] %></td>
-          <td><%= button_to "編集", user_path(id: user['line_id']), {method: :patch, class: "btn btn-success"} %></td>
-          <td><%= button_to "削除", user_path(id: user['line_id']), {method: :delete, class: "btn btn-danger"} %></td>
+          <td><%= button_to "編集", "/users/#{user["line_id"]}/edit_line", {method: :get, class: "btn btn-success"} %></td>
         </tr>
       <% end %>
     </tbody>

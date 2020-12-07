@@ -28,14 +28,7 @@ before_action :user_exist, only: [:show, :update, :destroy]
  # PUT /users/:id
   def update
 
-    @user_new = User.new(post_user)
-    # 変更項目がない場合、bad_requestを返却
-    if @user == @user_new
-      render status: :bad_request,
-             json: { data: { message: @user.errors } }
-    end
-
-    if @user.update(status: params[:status])
+    if @user.update(patch_user)
       render status: :ok, 
              json: { data: { user: @user } }
     else
@@ -66,7 +59,11 @@ before_action :user_exist, only: [:show, :update, :destroy]
 
     def post_user
       params.permit(:user_type, :line_id, :status)
-             .merge(status: 1)
+            .merge(status: 1)
+    end
+
+    def patch_user
+      params.permit(:status)
     end
 
 end

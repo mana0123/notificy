@@ -1,11 +1,12 @@
 <h1>UserList</h1>
 <h2>Admin User</h2>
+<%= button_to "追加", users_new_admin_path, {method: :get, class: "btn btn-primary"} %>
 <div class="container">
-  <%= render  'admin_users_show', admin_users:  @admin_users %>
+  <%= render  'admin_users_list', admin_users:  @admin_users %>
 </div>
 
 <h2>Line User</h2>
 <div class="container">
-  <%= render  'users_show', users:  @users %>
+  <%= render  'line_users_list', users:  @users %>
 </div>
 

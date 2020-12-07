@@ -1,0 +1,31 @@
+<h1>ユーザ編集</h1>
+<div class="container">
+  
+  <%= form_with model: @user, url: "/users/#{@user.id}/edit_admin" do |form| %>
+    <div class="form-group">
+      <%= form.label :status, 'ステータス', class: "col-sm-2 col-form-label" %>
+      <div class="col-sm-2 btn-group btn-group-toggle" data-toggle="buttons">
+        <% if @user.status == 1 %>
+          <label class="btn btn-outline-success active">
+            <%= form.radio_button :status, '1', { checked: true } %>有効
+          </label>
+          <label class="btn btn-outline-success">
+            <%= form.radio_button :status, '0' %>無効
+          </label>
+        <% else %>
+          <label class="btn btn-outline-success">
+            <%= form.radio_button :status, '1' %>有効
+          </label>
+          <label class="btn btn-outline-success active">
+            <%= form.radio_button :status, '0', { checked: true } %>無効
+          </label>
+        <% end %>
+      </div>
+    </div>
+    <%= form.submit '登録', class: "btn btn-primary" %>
+  <% end %>
+
+  <h2>ユーザ情報</h2>
+  <%= render  'admin_user_info', user:  @user %>
+
+</div>

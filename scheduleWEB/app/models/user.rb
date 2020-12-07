@@ -14,7 +14,7 @@ class User < ApplicationRecord
                      inclusion: { in: 0..1 }
   has_secure_password(validations: false)
   validates :password, presence: true, length: { minimum: 6 },
-            if: Proc.new { |user| user.user_type == 1 }
+            if: Proc.new { |user| user.user_type == 1 }, on: :create
 
   attr_accessor :access_token
 

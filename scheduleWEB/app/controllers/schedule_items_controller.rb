@@ -16,7 +16,7 @@ class ScheduleItemsController < ApplicationController
     send_schedule_api("users/#{params[:user_id]}/schedule_items", 
                       :post, form_data: post_param)
 
-    redirect_to controller: :users, action: :show, id: params[:user_id],
+    redirect_to controller: :users, action: :show_line, id: params[:user_id],
                 status: :ok
 
   end
