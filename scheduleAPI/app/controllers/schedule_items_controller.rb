@@ -23,7 +23,9 @@ class ScheduleItemsController < ApplicationController
     @schedule_item = nil
     @schedule_item_dates = []
 
-    # 永続化
+    # 1対多であるschedule_itemとschedule_item_dateを永続化
+    # schedule_item,schedule_item_dateいずれかが失敗した場合は
+    # コミットせずにエラーとする
     begin
       ActiveRecord::Base.transaction do
         # schedule_itemの永続化
@@ -32,6 +34,7 @@ class ScheduleItemsController < ApplicationController
         unless @schedule_item.errors.empty?
           raise ActiveRecord::RecordInvalid::new(@schedule_item)
         end
+
         # schedule_item_dateの永続化
         post_schedule_item_dates.each do |post_date| 
           schedule_item_date = @schedule_item.schedule_item_dates
@@ -59,7 +62,8 @@ class ScheduleItemsController < ApplicationController
 
   # PATCH /schedule_items/:id
   def update
-    # schedule_item_dateは実装が面倒なため、一旦全部削除してから再度全登録している
+    # 変更箇所のみを更新するように実装するのは面倒なため、
+    # 一旦全部削除してから再度全登録している。
     # この方法だとDB負荷が高くなるので、暇なときに方式を見直す。
     
     logger.debug("リクエストパラメータ:" + params.inspect)
